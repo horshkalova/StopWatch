@@ -13,6 +13,7 @@ public class StopWatchActivity extends Activity {
 
     TextView timerText;
     boolean timerRunning;
+    boolean wasRunning;
     int seconds = 0;
 
     @Override
@@ -24,6 +25,7 @@ public class StopWatchActivity extends Activity {
         if (savedInstanceState != null) {
             seconds = savedInstanceState.getInt("seconds", seconds);
             timerRunning = savedInstanceState.getBoolean("timerRunning", timerRunning);
+            wasRunning = savedInstanceState.getBoolean("wasRunning", wasRunning);
         }
 
         timerText = findViewById(R.id.timerText);
@@ -37,6 +39,27 @@ public class StopWatchActivity extends Activity {
 
         savedInstanceState.putInt("seconds", seconds);
         savedInstanceState.putBoolean("timerRunning", timerRunning);
+        savedInstanceState.putBoolean("wasRunning", wasRunning);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // record if the stopWatch was running
+        wasRunning = timerRunning;
+
+        timerRunning = false;
+    }
+
+    // if stopWatch was running, it'll run again
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (wasRunning) {
+
+            timerRunning = true;
+        }
     }
 
     public void onClickStart(View view) {
