@@ -21,7 +21,8 @@ public class StopWatchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
 
-        // restore the activity's state by getting values from Bundle
+        // Get the previous state of the stowatch
+        // if the activity's been destroyed and recreated
         if (savedInstanceState != null) {
             seconds = savedInstanceState.getInt("seconds", seconds);
             timerRunning = savedInstanceState.getBoolean("timerRunning", timerRunning);
@@ -33,7 +34,7 @@ public class StopWatchActivity extends Activity {
         runTimer();
     }
 
-    // save the state of the variables
+    // save the state of the stopwatch if it's about to be destroyed
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
@@ -42,9 +43,10 @@ public class StopWatchActivity extends Activity {
         savedInstanceState.putBoolean("wasRunning", wasRunning);
     }
 
+    // If the activity is paused, stop the watch
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
 
         // record if the stopWatch was running
         wasRunning = timerRunning;
@@ -52,13 +54,16 @@ public class StopWatchActivity extends Activity {
         timerRunning = false;
     }
 
-    // if stopWatch was running, it'll run again
+    // If the activity is resumed, start the stopwatch again
+    // if it was running previously
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
+
         if (wasRunning) {
 
             timerRunning = true;
+
         }
     }
 
@@ -102,8 +107,6 @@ public class StopWatchActivity extends Activity {
                     seconds++;
 
                 }
-
-
 
                 // post the code again with a delay of 1 second
                 handler.postDelayed(this, 1000);
